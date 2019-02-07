@@ -26,12 +26,14 @@
 		<script src="js/three.min.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/jquery-3.3.1.min.js"></script>
+		<script>module = {}</script>
+		<script src="js/earcut.js"></script>
 		<script>
 			
 			// Handle the dropped CityJSON file
 			function jsonGetter (url) {
 				"use strict"
-				
+
 				// Create new geometry for the new mesh
 				var geom = new THREE.Geometry();
 
@@ -83,16 +85,42 @@
 
 							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface" || "CompositeSurface")) {
 
-								for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
-									geom.faces.push( new THREE.Face3(
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][0],
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][1],
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][2]
-									));
-									var currentFace = geom.faces[ faceCounter ];
-									currentFace.color.setHex( objColors[coType] );
-									faceCounter += 1;
+								// for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
+								// 	geom.faces.push( new THREE.Face3(
+								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][0],
+								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][1],
+								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][2]
+								// 	));
+
+								for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
+ 							  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
+ 							  	//-- triangulate exterior ring
+ 							  	var v = [];
+ 							  	for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length; k++) {
+ 							  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
+ 							  		// console.log("--", i, "---", geom.vertices[i], "---", (geom.vertices[i])['y']);
+ 							  		v.push(geom.vertices[i]['x']);
+ 							  		v.push(geom.vertices[i]['y']);
+ 							  		v.push(geom.vertices[i]['z']);
+ 							  	};
+ 							  	console.log(v);
+ 							  	var tr = earcut(v, null, 3);
+ 							  	console.log(tr);
 								};
+								// for (var k = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
+									
+
+
+									// geom.faces.push( new THREE.Face3(
+									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][0],
+									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][1],
+									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][2]
+									// ));
+
+									// var currentFace = geom.faces[ faceCounter ];
+									// currentFace.color.setHex( objColors[coType] );
+									// faceCounter += 1;
+								// };
 							};
 							
 							if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
