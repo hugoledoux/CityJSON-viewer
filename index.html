@@ -85,13 +85,6 @@
 
 							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface" || "CompositeSurface")) {
 
-								// for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
-								// 	geom.faces.push( new THREE.Face3(
-								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][0],
-								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][1],
-								// 		json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][2]
-								// 	));
-
 								for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
  							  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
  							  	//-- triangulate exterior ring
@@ -115,24 +108,23 @@
 										pv.push(re['y']);
  							  	};
  							  	console.log("re:", pv);
-
+ 							  	//-- triangulate with mapbox.earcut
  							  	var tr = earcut(pv, null, 2);
  							  	console.log("tr:", tr);
+
+ 							  	for (var i = 0; i < tr.length; i += 3) {
+	 							  	geom.faces.push( new THREE.Face3(
+											v[tr[i]]['index'],
+											v[tr[i+1]]['index'],
+											v[tr[i+2]]['index']
+										));
+										var currentFace = geom.faces[ faceCounter ];
+										currentFace.color.setHex( objColors[coType] );
+										faceCounter += 1;
+									};
+
+
 								};
-								// for (var k = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
-									
-
-
-									// geom.faces.push( new THREE.Face3(
-									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][0],
-									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][1],
-									// 	json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][2]
-									// ));
-
-									// var currentFace = geom.faces[ faceCounter ];
-									// currentFace.color.setHex( objColors[coType] );
-									// faceCounter += 1;
-								// };
 							};
 							
 							if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
@@ -255,7 +247,8 @@
 				tmp2.multiplyScalar(tmp);
 				x3.sub(tmp2);
 				x3.normalize();
-				let y3 = n.cross(x3);
+				var y3 = n.clone();
+				y3.cross(x3);
 				let x = p.dot(x3);
 				let y = p.dot(y3);
 				var re = {x: x, y: y};
