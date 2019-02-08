@@ -95,17 +95,29 @@
 								for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
  							  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
  							  	//-- triangulate exterior ring
- 							  	var v = [];
+ 							  	let v = [];
  							  	for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length; k++) {
  							  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
- 							  		// console.log("--", i, "---", geom.vertices[i], "---", (geom.vertices[i])['y']);
- 							  		v.push(geom.vertices[i]['x']);
- 							  		v.push(geom.vertices[i]['y']);
- 							  		v.push(geom.vertices[i]['z']);
+ 							  		v.push({index: i, vertex: json.vertices[i]});
  							  	};
- 							  	console.log(v);
- 							  	var tr = earcut(v, null, 3);
- 							  	console.log(tr);
+ 							  	// console.log(v);
+ 							  	var n = get_normal_newell(v);
+ 							  	// console.log("->", n);
+ 							  	// var plane = new THREE.Plane(n);
+ 							  	let pv = []; //-- project vertices
+ 							  	for (var i = 0; i < v.length; i++) {
+ 							  		var ptmp = new THREE.Vector3(v[i]['vertex'][0], v[i]['vertex'][1], v[i]['vertex'][2]);
+										
+										var re = to_2d(ptmp, n);
+										// console.log("2d:", re);
+										
+										pv.push(re['x']);
+										pv.push(re['y']);
+ 							  	};
+ 							  	console.log("re:", pv);
+
+ 							  	var tr = earcut(pv, null, 2);
+ 							  	console.log("tr:", tr);
 								};
 								// for (var k = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) {
 									
@@ -209,25 +221,47 @@
 			    };
 			};
 
+
       function get_normal_newell(poly) {
         // find normal with Newell's method
-        var n = [0.0, 0.0, 0.0]
+        // console.log("poly:", poly);
+        var n = [0.0, 0.0, 0.0];
         // if len(poly) == 0:
         //     print ("NOPOINTS")
         for (var i = 0; i < poly.length; i++) {
-          var ne = i + 1;
-          if ( ne = poly.length) {
-            ne = 0;
+          var nex = i + 1;
+          if ( nex == poly.length) {
+            nex = 0;
           };
-          n[0] += ( (poly[i][1] - poly[ne][1]) * (poly[i][2] + poly[ne][2]) )
-          n[1] += ( (poly[i][2] - poly[ne][2]) * (poly[i][0] + poly[ne][0]) )
-          n[2] += ( (poly[i][0] - poly[ne][0]) * (poly[i][1] + poly[ne][1]) )
-      
-        // if (n==np.array([0.0, 0.0, 0.0])).all():
-        //     print ("oh collapsed triangle:", poly)
-         
-      n = n / sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2])    
-      return n
+          n[0] = n[0] + ( (poly[i]['vertex'][1] - poly[nex]['vertex'][1]) * (poly[i]['vertex'][2] + poly[nex]['vertex'][2]) );
+          n[1] = n[1] + ( (poly[i]['vertex'][2] - poly[nex]['vertex'][2]) * (poly[i]['vertex'][0] + poly[nex]['vertex'][0]) );
+          n[2] = n[2] + ( (poly[i]['vertex'][0] - poly[nex]['vertex'][0]) * (poly[i]['vertex'][1] + poly[nex]['vertex'][1]) );
+      	};
+        var b = new THREE.Vector3(n[0], n[1], n[2]);
+        return b.normalize();
+    	};
+
+    	function to_2d(p, n) {
+		    // n must be normalised
+		    // p = np.array([1, 2, 3])
+		    // newell = np.array([1, 3, 4.2])
+		    // n = newell/sqrt(p[0]*p[0] + p[1]*p[1] + p[2]*p[2])
+				var x3 = new THREE.Vector3(1.1, 1.1, 1.1);
+				if ( x3.distanceTo(n) < 0.01 ) {
+					x3.add(new THREE.Vector3(1.0, 2.0, 3.0));
+				}	    	
+				var tmp = x3.dot(n);
+				var tmp2 = n.clone();
+				tmp2.multiplyScalar(tmp);
+				x3.sub(tmp2);
+				x3.normalize();
+				let y3 = n.cross(x3);
+				let x = p.dot(x3);
+				let y = p.dot(y3);
+				var re = {x: x, y: y};
+				return re;
+	    }
+
 
 			// Dropbox functions
 			var dropbox;
