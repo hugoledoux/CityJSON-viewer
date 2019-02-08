@@ -93,10 +93,20 @@
  							  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
  							  		v.push({index: i, vertex: json.vertices[i]});
  							  	};
+ 							  	if (v.length == 3) {
+ 							  		geom.faces.push( new THREE.Face3(
+											v[0]['index'],
+											v[1]['index'],
+											v[2]['index']
+										));
+										var currentFace = geom.faces[ faceCounter ];
+										currentFace.color.setHex( objColors[coType] );
+										faceCounter += 1;
+										continue;
+ 							  	}
  							  	// console.log(v);
  							  	var n = get_normal_newell(v);
  							  	// console.log("->", n);
- 							  	// var plane = new THREE.Plane(n);
  							  	let pv = []; //-- project vertices
  							  	for (var i = 0; i < v.length; i++) {
  							  		var ptmp = new THREE.Vector3(v[i]['vertex'][0], v[i]['vertex'][1], v[i]['vertex'][2]);
