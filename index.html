@@ -16,12 +16,12 @@
 					<p class="dbText">Drop your CityJSON file here!</p>
 					<input type="file" id="fileElem" onchange="handleFiles(this.files)">
 			</div>
-			<div class="switchBox">
+			<!-- <div class="switchBox">
 				<label class="switch">
 					<input type="checkbox" id="wireframeBox" onclick="wireframeFunc()"> <p class="dbText"> Display wireframe geometry </p>
 					<span class="slider round"></span>
 				</label>
-			</div>
+			</div> -->
 		</div>
 		<script src="js/three.min.js"></script>
 		<script src="js/OrbitControls.js"></script>
@@ -177,16 +177,20 @@
 					mymesh.name = "CJMesh"
 					scene.add(mymesh);
 					
-					// Add wireframe if box is checked
-					if (document.getElementById("wireframeBox").checked == true){
-						wireframeFunc()
-					};			    
+					// Add wireframe
+					// var currentMesh = scene.getObjectByName( "CJMesh" );
+					var geo = new THREE.EdgesGeometry( mymesh.geometry ); 
+					var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+			    var wireframe = new THREE.LineSegments( geo, mat );
+			    wireframe.name = "wireframe"
+			    scene.add( wireframe );
+			    renderer.render(scene, camera);			    
 					
-				    // Reposition camera
-				    camera.position.set(0, 0, 2);
-				    camera.lookAt(0, 0, 0);
+				  // Reposition camera	
+				  camera.position.set(0, 0, 2);
+				  camera.lookAt(0, 0, 0);
 
-				    // Render & orbit controls
+				  // Render & orbit controls
 					var controls = new THREE.OrbitControls( camera, renderer.domElement );
 					controls.target.set(0, 0, 0);
 					controls.addEventListener( 'change', function() { renderer.render(scene, camera); } ); 
@@ -196,21 +200,14 @@
 
 			// Wireframe checkbox function
 			function wireframeFunc() {
-				// Get the checkbox
-  				var checkBox = document.getElementById("wireframeBox");
-  				if (checkBox.checked == true){
-			        // Add edges
-			        var currentMesh = scene.getObjectByName( "CJMesh" );
-					var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
-    				var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
-				    var wireframe = new THREE.LineSegments( geo, mat );
-				    wireframe.name = "wireframe"
-				    scene.add( wireframe );
-				    renderer.render(scene, camera);
-			    } else { // remove edges
-			      	scene.remove(scene.getObjectByName("wireframe"));
-			      	renderer.render(scene, camera);
-			    };
+	      // Add edges
+	      var currentMesh = scene.getObjectByName( "CJMesh" );
+				var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
+				var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+		    var wireframe = new THREE.LineSegments( geo, mat );
+		    wireframe.name = "wireframe"
+		    scene.add( wireframe );
+		    renderer.render(scene, camera);
 			};
 
 
