@@ -18,12 +18,10 @@
 					<!-- <input type="file" id="fileElem" onchange="handleFiles(this.files)"> -->
         </form>
 			</div>
-			<!-- <div class="switchBox">
-				<label class="switch">
-					<input type="checkbox" id="wireframeBox" onclick="wireframeFunc()"> <p class="dbText"> Display wireframe geometry </p>
-					<span class="slider round"></span>
-				</label>
-			</div> -->
+			
+      <div id="myProgress">
+        <div id="myBar"></div>
+      </div>
 
       <div class="infoBox">
         <label class="switch">
@@ -78,15 +76,32 @@
 					    scene.remove(scene.children[0]); 
 					}
 
-					// Add vertices to geometry
-					for (var i = 0; i < json.vertices.length; i++) {
-						geom.vertices.push( new THREE.Vector3 (
-							json.vertices[i][0],
-							json.vertices[i][1],
-							json.vertices[i][2]));
-					}
-					
-					for (var cityObj in json.CityObjects){
+          var roger = document.getElementById("myBar");
+          // console.log("progress:", progress);
+
+          console.log("JSON file loaded.");
+          
+          // Add vertices to geometry
+          for (var i = 0; i < json.vertices.length; i++) {
+            geom.vertices.push( new THREE.Vector3 (
+              json.vertices[i][0],
+              json.vertices[i][1],
+              json.vertices[i][2]));
+          }
+          console.log("Vertices loaded.");
+
+          var totalco = Object.keys(json.CityObjects).length;
+          console.log("Total # City Objects: ", totalco);
+					var countco = 0;
+          var width = (countco / totalco) * 100;
+					for (var cityObj in json.CityObjects) {
+            
+            if (countco % 100 == 0) {
+              console.log(Math.floor((countco / totalco) * 100));
+              roger.style.width = (Math.floor((countco / totalco) * 100))  + '%';
+            }
+            countco++;
+
 						var coType = json.CityObjects[cityObj].type;
 						for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
 
@@ -140,6 +155,8 @@
 
             }
 					}
+
+          roger.style.width = 0  + '%';
 
 					// Material for mesh
 					var material = new THREE.MeshBasicMaterial( {

@@ -45,3 +45,14 @@
 .dbText {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+#myProgress {
+  width: 100%;
+  background-color: #FFFFFF;
+}
+
+#myBar {
+  width: 1%;
+  height: 20px;
+  background-color: #4CAF50;
+}
