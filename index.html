@@ -29,7 +29,30 @@
 		<script>module = {}</script>
 		<script src="js/earcut.js"></script>
 		<script>
-			
+
+      var ALLCOLOURS = {
+        "Building": 0xcc0000,
+        "BuildingPart": 0xcc0000,
+        "BuildingInstallation": 0xcc0000,
+        "Bridge": 0x999999,
+        "BridgePart": 0x999999,
+        "BridgeInstallation": 0x999999,
+        "BridgeConstructionElement": 0x999999,
+        "CityObjectGroup": 0xffffb3,
+        "CityFurniture": 0xcc0000,
+        "GenericCityObject": 0xcc0000,
+        "LandUse": 0xffffb3,
+        "PlantCover": 0x39ac39,
+        "Railway": 0x000000,
+        "Road": 0x999999,
+        "SolitaryVegetationObject": 0x39ac39,
+        "TINRelief": 0x39ac39,
+        "TransportSquare": 0x999999,
+        "Tunnel": 0x999999,
+        "TunnelPart": 0x999999,
+        "TunnelInstallation": 0x999999,
+        "WaterBody": 0x4da6ff
+      };			
 			// Handle the dropped CityJSON file
 			function jsonGetter (url) {
 				"use strict"
@@ -42,7 +65,7 @@
 					// Remove old geometry from scene
 					while(scene.children.length > 0){ 
 					    scene.remove(scene.children[0]); 
-					};
+					}
 
 					// Add vertices to geometry
 					for (var i = 0; i < json.vertices.length; i++) {
@@ -86,89 +109,89 @@
 
 							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface" || "CompositeSurface")) {
 
-								// for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
-								// 	// console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[surface]);
-								// 	var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
-								// 	for (var i = 0; i < lsgv.length; i++) {
-								// 		for (var j = 0; j < lsgv[i].length; j++) {
-								// 			lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
-								// 			// console.log(lsgv[i][j]);
-								// 		}
-								// 	}
-								// 	console.log("g:", lsgv);
-								// 	draw_one_surface(geom, lsgv, coType);
-								// }
+								for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
+									// console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[surface]);
+									var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
+									for (var i = 0; i < lsgv.length; i++) {
+										for (var j = 0; j < lsgv[i].length; j++) {
+											lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+											// console.log(lsgv[i][j]);
+										}
+									}
+									// console.log("g:", lsgv);
+									draw_one_surface(geom, lsgv, coType);
+								}
 
-								for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
- 							  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
- 							  	//-- triangulate exterior ring
- 							  	let v = [];
- 							  	for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length; k++) {
- 							  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
- 							  		v.push({index: i, vertex: json.vertices[i]});
- 							  	}
- 							  	if (v.length == 3) {
- 							  		geom.faces.push( new THREE.Face3(
-											v[0]['index'],
-											v[1]['index'],
-											v[2]['index']
-										));
-										var currentFace = geom.faces[ faceCounter ];
-										currentFace.color.setHex( objColors[coType] );
-										faceCounter += 1;
-										continue;
- 							  	}
- 							  	else if (v.length == 4) {
- 							  		geom.faces.push( new THREE.Face3(
-											v[0]['index'],
-											v[1]['index'],
-											v[2]['index']
-										));
-										var currentFace = geom.faces[ faceCounter ];
-										currentFace.color.setHex( objColors[coType] );
-										faceCounter += 1;
-										geom.faces.push( new THREE.Face3(
-											v[0]['index'],
-											v[2]['index'],
-											v[3]['index']
-										));
-										var currentFace = geom.faces[ faceCounter ];
-										currentFace.color.setHex( objColors[coType] );
-										faceCounter += 1;
-										continue;
- 							  	}
- 							  	// console.log(v);
- 							  	var n = get_normal_newell(v);
- 							  	// console.log("->", n);
- 							  	let pv = []; //-- project vertices
- 							  	for (var i = 0; i < v.length; i++) {
- 							  		var ptmp = new THREE.Vector3(v[i]['vertex'][0], v[i]['vertex'][1], v[i]['vertex'][2]);
+							// 	for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
+ 						// 	  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
+ 						// 	  	//-- triangulate exterior ring
+ 						// 	  	let v = [];
+ 						// 	  	for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length; k++) {
+ 						// 	  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
+ 						// 	  		v.push({index: i, vertex: json.vertices[i]});
+ 						// 	  	}
+ 						// 	  	if (v.length == 3) {
+ 						// 	  		geom.faces.push( new THREE.Face3(
+							// 				v[0]['index'],
+							// 				v[1]['index'],
+							// 				v[2]['index']
+							// 			));
+							// 			var currentFace = geom.faces[ faceCounter ];
+							// 			currentFace.color.setHex( objColors[coType] );
+							// 			faceCounter += 1;
+							// 			continue;
+ 						// 	  	}
+ 						// 	  	else if (v.length == 4) {
+ 						// 	  		geom.faces.push( new THREE.Face3(
+							// 				v[0]['index'],
+							// 				v[1]['index'],
+							// 				v[2]['index']
+							// 			));
+							// 			var currentFace = geom.faces[ faceCounter ];
+							// 			currentFace.color.setHex( objColors[coType] );
+							// 			faceCounter += 1;
+							// 			geom.faces.push( new THREE.Face3(
+							// 				v[0]['index'],
+							// 				v[2]['index'],
+							// 				v[3]['index']
+							// 			));
+							// 			var currentFace = geom.faces[ faceCounter ];
+							// 			currentFace.color.setHex( objColors[coType] );
+							// 			faceCounter += 1;
+							// 			continue;
+ 						// 	  	}
+ 						// 	  	// console.log(v);
+ 						// 	  	var n = get_normal_newell(v);
+ 						// 	  	// console.log("->", n);
+ 						// 	  	let pv = []; //-- project vertices
+ 						// 	  	for (var i = 0; i < v.length; i++) {
+ 						// 	  		var ptmp = new THREE.Vector3(v[i]['vertex'][0], v[i]['vertex'][1], v[i]['vertex'][2]);
 										
-										var re = to_2d(ptmp, n);
-										// console.log("2d:", re);
+							// 			var re = to_2d(ptmp, n);
+							// 			// console.log("2d:", re);
 										
-										pv.push(re['x']);
-										pv.push(re['y']);
- 							  	};
- 							  	console.log("re:", pv);
- 							  	//-- triangulate with mapbox.earcut
- 							  	var tr = earcut(pv, null, 2);
- 							  	console.log("tr:", tr);
+							// 			pv.push(re['x']);
+							// 			pv.push(re['y']);
+ 						// 	  	};
+ 						// 	  	console.log("re:", pv);
+ 						// 	  	//-- triangulate with mapbox.earcut
+ 						// 	  	var tr = earcut(pv, null, 2);
+ 						// 	  	console.log("tr:", tr);
 
- 							  	for (var i = 0; i < tr.length; i += 3) {
-	 							  	geom.faces.push( new THREE.Face3(
-											v[tr[i]]['index'],
-											v[tr[i+1]]['index'],
-											v[tr[i+2]]['index']
-										));
-										var currentFace = geom.faces[ faceCounter ];
-										currentFace.color.setHex( objColors[coType] );
-										faceCounter += 1;
-									};
+ 						// 	  	for (var i = 0; i < tr.length; i += 3) {
+	 					// 		  	geom.faces.push( new THREE.Face3(
+							// 				v[tr[i]]['index'],
+							// 				v[tr[i+1]]['index'],
+							// 				v[tr[i+2]]['index']
+							// 			));
+							// 			var currentFace = geom.faces[ faceCounter ];
+							// 			currentFace.color.setHex( objColors[coType] );
+							// 			faceCounter += 1;
+							// 		};
 
 
-								};
-							};
+							// 	};
+							}
 							
 							if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
 
@@ -211,7 +234,8 @@
 				        polygonOffset: true,
 				        polygonOffsetFactor: 1, // positive value pushes polygon further away
 				        polygonOffsetUnits: 1
-				    } );
+				    } 
+          )
 
 					// Add mesh to scene
 					var mymesh = new THREE.Mesh(geom, material);					
@@ -238,19 +262,58 @@
 					controls.target.set(0, 0, 0);
 					controls.addEventListener( 'change', function() { renderer.render(scene, camera); } ); 
 					renderer.render(scene, camera);
-				});
-			};
+				})
+			}
 
 			//-- draw one surface (potentially with irings)
 			function draw_one_surface(geom, surface, cotype) {
-				console.log(surface);
+				// console.log(surface);
+        if (surface.length > 1) {
+          console.log("!!! TODO: INNER RINGS NOT DRAWN !!!");
+        }
+        //-- only oring
+        let oring = surface[0];
+        if (oring.length == 3) {
+          geom.faces.push( new THREE.Face3(
+            oring[0]['index'],
+            oring[1]['index'],
+            oring[2]['index']
+          ));
+          var lastface = geom.faces[geom.faces.length - 1];
+          lastface.color.setHex(ALLCOLOURS[cotype]);
+        }
+        else {
+          var n = get_normal_newell(oring);
+          // console.log("->", n);
+          let pv = []; //-- project vertices
+          for (var i = 0; i < oring.length; i++) {
+            var ptmp = new THREE.Vector3(oring[i]['vertex'][0], oring[i]['vertex'][1], oring[i]['vertex'][2]);
+            var re = to_2d(ptmp, n);
+            // console.log("2d:", re);
+            pv.push(re['x']);
+            pv.push(re['y']);
+          };
+          console.log("re:", pv);
+          //-- triangulate with mapbox.earcut
+          var tr = earcut(pv, null, 2);
+          console.log("tr:", tr);
+          for (var i = 0; i < tr.length; i += 3) {
+            geom.faces.push( new THREE.Face3(
+              oring[tr[i]]['index'],
+              oring[tr[i+1]]['index'],
+              oring[tr[i+2]]['index']
+            ));
+            var lastface = geom.faces[geom.faces.length - 1];
+            lastface.color.setHex(ALLCOLOURS[cotype]);
+          }
+        }
 			}
 
 			//-- Wireframe checkbox function
 			function wireframeFunc() {
 	      var currentMesh = scene.getObjectByName( "CJMesh" );
 				var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
-				var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+				var mat = new THREE.LineBasicMaterial( { color: 0x3F3F3F, linewidth: .8, transparent: true, opacity: 0.2 } );
 		    var wireframe = new THREE.LineSegments( geo, mat );
 		    wireframe.name = "wireframe"
 		    scene.add( wireframe );
