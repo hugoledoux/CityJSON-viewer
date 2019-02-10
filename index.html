@@ -80,7 +80,10 @@
 						var coType = json.CityObjects[cityObj].type;
 						for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
 
-							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface" || "CompositeSurface")) {
+              if (
+                 (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface")) ||
+                 (json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSurface")) 
+                 ) {
 								for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
 									var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
 									for (var i = 0; i < lsgv.length; i++) {
@@ -106,7 +109,10 @@
                 }
 							}
 
-              if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid" || "CompositeSolid")) {
+              if (
+                 (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid")) ||
+                 (json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSolid")) 
+                 ) {
                 for (var solid = 0; solid < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; solid++) { 
                   for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid].length; shell++) { 
                     for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell].length; surface++) { 
