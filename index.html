@@ -12,10 +12,11 @@
 		<link rel="stylesheet" href="./css/cityjson.css">
 		<div class="pageHead">
 			<div class="dropboxBox">
-  				<form id="dropbox" class="my-form">
-            <p><img class="logo" src="http://www.cityjson.org/en/0.9/_static/cityjson_logo.svg" width="120"></p>
+  			<form id="dropbox" class="my-form">
+            <p><img class="logo" src="img/cityjson_logo.svg" width="120"></p>
 					<p class="dbText">Drop your file here!</p>
 					<input type="file" id="fileElem" onchange="handleFiles(this.files)">
+        </form>
 			</div>
 			<!-- <div class="switchBox">
 				<label class="switch">
@@ -23,13 +24,21 @@
 					<span class="slider round"></span>
 				</label>
 			</div> -->
+
+      <div class="infoBox">
+        <label class="switch">
+          <p>https://github.com/hugoledoux/CityJSON-viewer/</p>
+        </label>
+      </div>
+
 		</div>
 		<script src="js/three.min.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/jquery-3.3.1.min.js"></script>
 		<script>module = {}</script>
 		<script src="js/earcut.js"></script>
-		<script>
+		
+    <script>
 
       var ALLCOLOURS = {
         "Building": 0xcc0000,
@@ -47,7 +56,7 @@
         "Railway": 0x000000,
         "Road": 0x999999,
         "SolitaryVegetationObject": 0x39ac39,
-        "TINRelief": 0x39ac39,
+        "TINRelief": 0x3FD43F,
         "TransportSquare": 0x999999,
         "Tunnel": 0x999999,
         "TunnelPart": 0x999999,
@@ -63,6 +72,7 @@
 
 				$.getJSON(url, function (json) {
 					
+
 					// Remove old geometry from scene
 					while(scene.children.length > 0){ 
 					    scene.remove(scene.children[0]); 
@@ -197,10 +207,10 @@
             pv.push(re['x']);
             pv.push(re['y']);
           };
-          console.log("re:", pv);
+          // console.log("re:", pv);
           //-- triangulate with mapbox.earcut
           var tr = earcut(pv, null, 2);
-          console.log("tr:", tr);
+          // console.log("tr:", tr);
           for (var i = 0; i < tr.length; i += 3) {
             geom.faces.push( new THREE.Face3(
               oring[tr[i]]['index'],
@@ -303,17 +313,15 @@
 			function drop(e) {
 			  e.stopPropagation();
 			  e.preventDefault();
-
 			  var dt = e.dataTransfer;
 			  var files = dt.files;
-
 			  handleFiles(files);
 			}
 
 			function handleFiles(files) {
-				var jsonfile = files[0]
+				var jsonfile = files[0];
 				var objectURL = window.URL.createObjectURL(jsonfile);
-				jsonGetter(objectURL)
+				jsonGetter(objectURL);
 			}
 
 			// Initiate scene, camera, renderer
