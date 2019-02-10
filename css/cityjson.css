@@ -1,3 +1,4 @@
+
 .pageHead {
   position: relative;
 }
@@ -14,14 +15,18 @@
 }
 
 #dropbox {
-  border: 2px dashed #9BD;
+  border: 1px dashed #0F73BD;
   border-radius: 20px;
-  width: 300px;
+  width: 200px;
   margin: 20px auto;
   padding: 20px;
 }
+
 #dropbox.highlight {
-  border-color: purple;
+  background: #0F73BD;
+  opacity: 0.5;
+  /*background: green;*/
+  /*border-color: red;*/
 }
 
 .dbText {
