@@ -74,166 +74,46 @@
 							json.vertices[i][1],
 							json.vertices[i][2]));
 					}
-
-					var objColors = {
-						"Building": 0xcc0000,
-						"BuildingPart": 0xcc0000,
-						"BuildingInstallation": 0xcc0000,
-						"Bridge": 0x999999,
-						"BridgePart": 0x999999,
-						"BridgeInstallation": 0x999999,
-						"BridgeConstructionElement": 0x999999,
-						"CityObjectGroup": 0xffffb3,
-						"CityFurniture": 0xcc0000,
-						"GenericCityObject": 0xcc0000,
-						"LandUse": 0xffffb3,
-						"PlantCover": 0x39ac39,
-						"Railway": 0x000000,
-						"Road": 0x999999,
-						"SolitaryVegetationObject": 0x39ac39,
-						"TINRelief": 0x39ac39,
-						"TransportSquare": 0x999999,
-						"Tunnel": 0x999999,
-						"TunnelPart": 0x999999,
-						"TunnelInstallation": 0x999999,
-						"WaterBody": 0x4da6ff
-					};
-					var faceCounter = 0;
 					
-					// Add faces to geometry
 					for (var cityObj in json.CityObjects){
-
 						var coType = json.CityObjects[cityObj].type;
-
 						for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
 
 							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface" || "CompositeSurface")) {
-
 								for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
-									// console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[surface]);
 									var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
 									for (var i = 0; i < lsgv.length; i++) {
 										for (var j = 0; j < lsgv[i].length; j++) {
 											lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
-											// console.log(lsgv[i][j]);
 										}
 									}
-									// console.log("g:", lsgv);
 									draw_one_surface(geom, lsgv, coType);
 								}
-
-							// 	for (var j = 0; j < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; j++) { 
- 						// 	  	console.log(json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length); 
- 						// 	  	//-- triangulate exterior ring
- 						// 	  	let v = [];
- 						// 	  	for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0].length; k++) {
- 						// 	  		var i = json.CityObjects[cityObj].geometry[geomNum].boundaries[j][0][k];
- 						// 	  		v.push({index: i, vertex: json.vertices[i]});
- 						// 	  	}
- 						// 	  	if (v.length == 3) {
- 						// 	  		geom.faces.push( new THREE.Face3(
-							// 				v[0]['index'],
-							// 				v[1]['index'],
-							// 				v[2]['index']
-							// 			));
-							// 			var currentFace = geom.faces[ faceCounter ];
-							// 			currentFace.color.setHex( objColors[coType] );
-							// 			faceCounter += 1;
-							// 			continue;
- 						// 	  	}
- 						// 	  	else if (v.length == 4) {
- 						// 	  		geom.faces.push( new THREE.Face3(
-							// 				v[0]['index'],
-							// 				v[1]['index'],
-							// 				v[2]['index']
-							// 			));
-							// 			var currentFace = geom.faces[ faceCounter ];
-							// 			currentFace.color.setHex( objColors[coType] );
-							// 			faceCounter += 1;
-							// 			geom.faces.push( new THREE.Face3(
-							// 				v[0]['index'],
-							// 				v[2]['index'],
-							// 				v[3]['index']
-							// 			));
-							// 			var currentFace = geom.faces[ faceCounter ];
-							// 			currentFace.color.setHex( objColors[coType] );
-							// 			faceCounter += 1;
-							// 			continue;
- 						// 	  	}
- 						// 	  	// console.log(v);
- 						// 	  	var n = get_normal_newell(v);
- 						// 	  	// console.log("->", n);
- 						// 	  	let pv = []; //-- project vertices
- 						// 	  	for (var i = 0; i < v.length; i++) {
- 						// 	  		var ptmp = new THREE.Vector3(v[i]['vertex'][0], v[i]['vertex'][1], v[i]['vertex'][2]);
-										
-							// 			var re = to_2d(ptmp, n);
-							// 			// console.log("2d:", re);
-										
-							// 			pv.push(re['x']);
-							// 			pv.push(re['y']);
- 						// 	  	};
- 						// 	  	console.log("re:", pv);
- 						// 	  	//-- triangulate with mapbox.earcut
- 						// 	  	var tr = earcut(pv, null, 2);
- 						// 	  	console.log("tr:", tr);
-
- 						// 	  	for (var i = 0; i < tr.length; i += 3) {
-	 					// 		  	geom.faces.push( new THREE.Face3(
-							// 				v[tr[i]]['index'],
-							// 				v[tr[i+1]]['index'],
-							// 				v[tr[i+2]]['index']
-							// 			));
-							// 			var currentFace = geom.faces[ faceCounter ];
-							// 			currentFace.color.setHex( objColors[coType] );
-							// 			faceCounter += 1;
-							// 		};
-
-
-							// 	};
 							}
 							
 							if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
-
-								for (var k = 0; k < json.CityObjects[cityObj].geometry[geomNum].boundaries[0].length; k++) {
-									geom.faces.push( new THREE.Face3(
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[0][k][0][0],
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[0][k][0][1],
-										json.CityObjects[cityObj].geometry[geomNum].boundaries[0][k][0][2]
-									));
-									var currentFace = geom.faces[ faceCounter ];
-									currentFace.color.setHex( objColors[coType] );
-									faceCounter += 1;
-								};
-
-							};
-
-							if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid" || "CompositeSolid")) {
-
-								for (var l = 0; l < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; l++) {
-									for (var m = 0; m < json.CityObjects[cityObj].geometry[geomNum].boundaries[l][0].length; m++) {
-										geom.faces.push( new THREE.Face3(
-											json.CityObjects[cityObj].geometry[geomNum].boundaries[l][0][m][0][0],
-											json.CityObjects[cityObj].geometry[geomNum].boundaries[l][0][m][0][1],
-											json.CityObjects[cityObj].geometry[geomNum].boundaries[l][0][m][0][2]
-										));
-										var currentFace = geom.faces[ faceCounter ];
-										currentFace.color.setHex( objColors[coType] );
-										faceCounter += 1;
-									};
-								};
-							};	
-						};
-					
-					};
+                for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; shell++) { 
+                  for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[shell].length; surface++) { 
+                    var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[shell][surface].slice(0);
+                    for (var i = 0; i < lsgv.length; i++) {
+                      for (var j = 0; j < lsgv[i].length; j++) {
+                        lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+                      }
+                    }
+                    draw_one_surface(geom, lsgv, coType);
+                  }
+                }
+							}
+            }
+					}
 
 					// Material for mesh
 					var material = new THREE.MeshBasicMaterial( {
-				        vertexColors: THREE.VertexColors,
+				      vertexColors: THREE.VertexColors,
 				    	flatShading: THREE.FlatShading,
-				        polygonOffset: true,
-				        polygonOffsetFactor: 1, // positive value pushes polygon further away
-				        polygonOffsetUnits: 1
+				      polygonOffset: true,
+				      polygonOffsetFactor: 1, // positive value pushes polygon further away
+				      polygonOffsetUnits: 1
 				    } 
           )
 
