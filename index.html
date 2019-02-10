@@ -104,6 +104,23 @@
                   }
                 }
 							}
+
+              if (json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid" || "CompositeSolid")) {
+                for (var solid = 0; solid < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; solid++) { 
+                  for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid].length; shell++) { 
+                    for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell].length; surface++) { 
+                      var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell][surface].slice(0);
+                      for (var i = 0; i < lsgv.length; i++) {
+                        for (var j = 0; j < lsgv[i].length; j++) {
+                          lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+                        }
+                      }
+                      draw_one_surface(geom, lsgv, coType);
+                    }
+                  }
+                }
+              }
+
             }
 					}
 
@@ -199,8 +216,6 @@
 		    scene.add( wireframe );
 		    renderer.render(scene, camera);
 			};
-
-
 
 			//-- calculate normal of a set of points
       function get_normal_newell(poly) {
