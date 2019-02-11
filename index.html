@@ -34,29 +34,7 @@
 		
     <script>
 
-      var ALLCOLOURS = {
-        "Building": 0xcc0000,
-        "BuildingPart": 0xcc0000,
-        "BuildingInstallation": 0xcc0000,
-        "Bridge": 0x999999,
-        "BridgePart": 0x999999,
-        "BridgeInstallation": 0x999999,
-        "BridgeConstructionElement": 0x999999,
-        "CityObjectGroup": 0xffffb3,
-        "CityFurniture": 0xcc0000,
-        "GenericCityObject": 0xcc0000,
-        "LandUse": 0xffffb3,
-        "PlantCover": 0x39ac39,
-        "Railway": 0x000000,
-        "Road": 0x999999,
-        "SolitaryVegetationObject": 0x39ac39,
-        "TINRelief": 0x3FD43F,
-        "TransportSquare": 0x999999,
-        "Tunnel": 0x999999,
-        "TunnelPart": 0x999999,
-        "TunnelInstallation": 0x999999,
-        "WaterBody": 0x4da6ff
-      };			
+		
 			// Handle the dropped CityJSON file
 			function jsonGetter (url) {
 				"use strict"
@@ -188,7 +166,7 @@
             oring[2]['index']
           ));
           var lastface = geom.faces[geom.faces.length - 1];
-          lastface.color.setHex(ALLCOLOURS[cotype]);
+          lastface.color.setHex(get_colour(cotype));
         }
         else {
           var n = get_normal_newell(oring);
@@ -212,7 +190,7 @@
               oring[tr[i+2]]['index']
             ));
             var lastface = geom.faces[geom.faces.length - 1];
-            lastface.color.setHex(ALLCOLOURS[cotype]);
+            lastface.color.setHex(get_colour(cotype));
           }
         }
 			}
@@ -269,6 +247,38 @@
 				var re = {x: x, y: y};
 				return re;
 	    }
+
+      function get_colour(cotype) {
+        var ALLCOLOURS = {
+          "Building": 0xcc0000,
+          "BuildingPart": 0xcc0000,
+          "BuildingInstallation": 0xcc0000,
+          "Bridge": 0x804002,
+          "BridgePart": 0x804002,
+          "BridgeInstallation": 0x804002,
+          "BridgeConstructionElement": 0x804002,
+          "CityObjectGroup": 0xffffb3,
+          "CityFurniture": 0xcc0000,
+          "GenericCityObject": 0xcc0000,
+          "LandUse": 0xffffb3,
+          "PlantCover": 0x39ac39,
+          "Railway": 0xBFBFBF,
+          "Road": 0xBFBFBF,
+          "SolitaryVegetationObject": 0x39ac39,
+          "TINRelief": 0xCE6406,
+          "TransportSquare": 0xBFBFBF,
+          "Tunnel": 0x3F3F3F,
+          "TunnelPart": 0x3F3F3F,
+          "TunnelInstallation": 0x3F3F3F,
+          "WaterBody": 0x4da6ff
+        };
+        if (cotype in ALLCOLOURS) {
+          return ALLCOLOURS[cotype];
+        }
+        else {
+          return 0xCF2F89;
+        }
+      }
 
 
 			// Dropbox functions
