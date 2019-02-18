@@ -20,7 +20,7 @@ var ALLCOLOURS = {
     "TunnelPart": 0x999999,
     "TunnelInstallation": 0x999999,
     "WaterBody": 0x4da6ff
-  };
+};
 // Handle the dropped CityJSON file
 function jsonGetter (url) {
 "use strict"
@@ -34,7 +34,6 @@ function jsonGetter (url) {
 		}
 
 		var roger = document.getElementById("myBar");
-		// console.log("progress:", progress);
 
 		console.log("JSON file loaded.");
 
@@ -49,105 +48,122 @@ function jsonGetter (url) {
 
 		var totalco = Object.keys(json.CityObjects).length;
 		console.log("Total # City Objects: ", totalco);
-				var countco = 0;
-		var width = (countco / totalco) * 100;
-		for (var cityObj in json.CityObjects) {
-			if (countco % 100 == 0) {
-			  console.log(Math.floor((countco / totalco) * 100));
-			  roger.style.width = (Math.floor((countco / totalco) * 100))  + '%';
+		parseObjects(geom, json, totalco, function(){
+			createmesh(geom);
+		});
+
+		//roger.style.width = 0  + '%';
+		
+	})
+}
+function parseObjects(geom, json, totalco, callback){
+	var countco = 0;
+	for (var cityObj in json.CityObjects) {
+		countco++;
+		parseObject(geom, json, cityObj, function(){
+			updateProgress(countco, totalco)
+		});
+	}
+	callback();
+}
+
+function parseObject(geom, json, cityObj, callback){
+	var coType = json.CityObjects[cityObj].type;
+	for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
+
+		if (
+		(json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface")) ||
+		(json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSurface")) 
+		) {
+			for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
+				var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
+				for (var i = 0; i < lsgv.length; i++) {
+					for (var j = 0; j < lsgv[i].length; j++) {
+						lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+					}
+				}
+				draw_one_surface(geom, lsgv, coType);
 			}
-			countco++;
+		}
+			
+		if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
+			for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; shell++) { 
+				for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[shell].length; surface++) { 
+					var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[shell][surface].slice(0);
+					for (var i = 0; i < lsgv.length; i++) {
+						for (var j = 0; j < lsgv[i].length; j++) {
+							lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+						}
+					}
+					draw_one_surface(geom, lsgv, coType);
+				}
+			}
+		}
 
-			var coType = json.CityObjects[cityObj].type;
-			for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
-
-				if (
-				(json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface")) ||
-				(json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSurface")) 
-				) {
-					for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; surface++) { 
-						var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[surface].slice(0);
+		if (
+		(json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid")) ||
+		(json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSolid")) 
+		) {
+			for (var solid = 0; solid < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; solid++) { 
+				for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid].length; shell++) { 
+					for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell].length; surface++) { 
+						var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell][surface].slice(0);
 						for (var i = 0; i < lsgv.length; i++) {
 							for (var j = 0; j < lsgv[i].length; j++) {
-								lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
+		  						lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
 							}
 						}
 						draw_one_surface(geom, lsgv, coType);
 					}
 				}
-					
-				if (json.CityObjects[cityObj].geometry[geomNum].type == "Solid") {
-					for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; shell++) { 
-						for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[shell].length; surface++) { 
-							var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[shell][surface].slice(0);
-							for (var i = 0; i < lsgv.length; i++) {
-								for (var j = 0; j < lsgv[i].length; j++) {
-									lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
-								}
-							}
-							draw_one_surface(geom, lsgv, coType);
-						}
-					}
-				}
-
-				if (
-				(json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSolid")) ||
-				(json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSolid")) 
-				) {
-					for (var solid = 0; solid < json.CityObjects[cityObj].geometry[geomNum].boundaries.length; solid++) { 
-						for (var shell = 0; shell < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid].length; shell++) { 
-							for (var surface = 0; surface < json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell].length; surface++) { 
-								var lsgv = json.CityObjects[cityObj].geometry[geomNum].boundaries[solid][shell][surface].slice(0);
-								for (var i = 0; i < lsgv.length; i++) {
-									for (var j = 0; j < lsgv[i].length; j++) {
-				  						lsgv[i][j] = {index: lsgv[i][j], vertex: json.vertices[lsgv[i][j]]};
-									}
-								}
-								draw_one_surface(geom, lsgv, coType);
-							}
-						}
-					}
-				}
 			}
 		}
+	}
+	callback();
+}
 
-		roger.style.width = 0  + '%';
+function updateProgress(countco, totalco) {
+	if (countco % 100 == 0) {
+		console.log(Math.floor((countco / totalco) * 100));
+		document.getElementById("myBar").style.width = (Math.floor((countco / totalco) * 100))  + '%';
+	}
+}
 
-		// Material for mesh
-		var material = new THREE.MeshBasicMaterial({
-			vertexColors: THREE.VertexColors,
-			flatShading: THREE.FlatShading,
-			polygonOffset: true,
-			polygonOffsetFactor: 1, // positive value pushes polygon further away
-			polygonOffsetUnits: 1
-		})
-
-		// Add mesh to scene
-		var mymesh = new THREE.Mesh(geom, material);					
-		mymesh.material.side = THREE.DoubleSide;
-		mymesh.geometry.normalize();
-		mymesh.name = "CJMesh"
-		scene.add(mymesh);
-
-		// Add wireframe
-		// var currentMesh = scene.getObjectByName( "CJMesh" );
-		var geo = new THREE.EdgesGeometry( mymesh.geometry ); 
-		var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
-		var wireframe = new THREE.LineSegments( geo, mat );
-		wireframe.name = "wireframe"
-		scene.add( wireframe );
-		renderer.render(scene, camera);			    
-
-		// Reposition camera	
-		camera.position.set(0, 0, 2);
-		camera.lookAt(0, 0, 0);
-
-		// Render & orbit controls
-		var controls = new THREE.OrbitControls( camera, renderer.domElement );
-		controls.target.set(0, 0, 0);
-		controls.addEventListener( 'change', function() { renderer.render(scene, camera); } ); 
-		renderer.render(scene, camera);
+function createmesh(geom){
+	// Material for mesh
+	var material = new THREE.MeshBasicMaterial({
+		vertexColors: THREE.VertexColors,
+		flatShading: THREE.FlatShading,
+		polygonOffset: true,
+		polygonOffsetFactor: 1, // positive value pushes polygon further away
+		polygonOffsetUnits: 1
 	})
+
+	// Add mesh to scene
+	var mymesh = new THREE.Mesh(geom, material);
+	mymesh.material.side = THREE.DoubleSide;
+	mymesh.geometry.normalize();
+	mymesh.name = "CJMesh"
+	scene.add(mymesh);
+
+	// Add wireframe
+	// var currentMesh = scene.getObjectByName( "CJMesh" );
+	// var geo = new THREE.EdgesGeometry( mymesh.geometry ); 
+	// var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+	// var wireframe = new THREE.LineSegments( geo, mat );
+	// wireframe.name = "wireframe"
+	// scene.add( wireframe );
+	// renderer.render(scene, camera);
+
+	// Reposition camera	
+	camera.position.set(0, 0, 2);
+	camera.lookAt(0, 0, 0);
+
+	// Render & orbit controls
+	var controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.target.set(0, 0, 0);
+	controls.addEventListener( 'change', function() { renderer.render(scene, camera); } ); 
+	renderer.render(scene, camera);
 }
 
 //-- draw one surface (potentially with irings)
@@ -205,7 +221,7 @@ function wireframeFunc() {
 	renderer.render(scene, camera);
 };
 
-			//-- calculate normal of a set of points
+//-- calculate normal of a set of points
 function get_normal_newell(poly) {
 	// find normal with Newell's method
 	// console.log("poly:", poly);
