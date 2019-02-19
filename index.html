@@ -13,21 +13,25 @@
 		<div class="pageHead">
 			<div class="dropboxBox">
 	  			<form id="dropbox" class="my-form">
-	            <p><img class="logo" src="img/cityjson_logo.svg" width="120"></p>
-						<p class="dbText">Drop your file here!</p>
-						<!-- <input type="file" id="fileElem" onchange="handleFiles(this.files)"> -->
+	            	<p><img class="logo" src="img/cityjson_logo.svg" width="120"></p>
+					<p class="dbText">Drop your file here or click to open</p>
+					<input type="file" id="fileElem" onchange="handleFiles(this.files)" style="display: none">
 	        	</form>
+    		</div>
+    		<div class="switchBox">
+	        	<label class="switch">
+					<input type="checkbox" id="wireframeBox" onclick="wireframeFunc()"> 
+					<span class="slider round"></span>
+					<p class="dbText">Show wireframe</p>
+				</label>
 			</div>
-			
-			<div id="myProgress">
-				<div id="myBar"></div>
-			</div>
+		</div>
 
-			<div class="infoBox">
-			<label class="switch">
-			  <p><a href="https://github.com/hugoledoux/CityJSON-viewer/">GitHub repository</a></p>
-			</label>
-			</div>
+		<div class="loader" id="loader" style="display: none"></div>
+		
+		<div class="infoBox">
+		  	<p><a href="https://github.com/hugoledoux/CityJSON-viewer/">GitHub repository</a></p>
+
 		</div>
 		<script src="js/three.min.js"></script>
 		<script src="js/OrbitControls.js"></script>

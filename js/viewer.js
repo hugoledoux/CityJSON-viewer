@@ -24,6 +24,9 @@ var ALLCOLOURS = {
 // Handle the dropped CityJSON file
 function jsonGetter (url) {
 "use strict"
+	// start spinner
+	document.getElementById("loader").style.display = "block";
+	
 	// Create new geometry for the new mesh
 	var geom = new THREE.Geometry();
 
@@ -47,46 +50,22 @@ function jsonGetter (url) {
 		var totalco = Object.keys(json.CityObjects).length;
 		console.log("Total # City Objects: ", totalco);
 
-		//parseObjects(totalco, geom, json, function(){createmesh(geom)});
-		parseObjectsProgress(totalco, geom, json, function(){createmesh(geom)});
+		parseObjects(geom, json, function(){
+			createmesh(geom);
+			// stop spinner
+			document.getElementById("loader").style.display = "none";
+		});
 	});
 }
 
-function parseObjects(totalco, geom, json, callback){
-	var countco = 0;
+function parseObjects(geom, json, callback){
 	for (var cityObj in json.CityObjects) {
-		countco++;
-		parseObject(geom, json, cityObj, countco, totalco, function(){});
+		parseObject(geom, json, cityObj);
 	}
-	
 	callback();
 }
 
-function parseObjectsProgress(totalco, geom, json, callback){
-	groupcount = Math.floor(totalco / 20);
-	var countco = 0;
-
-	function next() {
-		for (var i = 0; i < groupcount; i++) {
-			if (countco < totalco) {
-				parseObject(geom, json, Object.keys(json.CityObjects)[countco], countco, totalco, function(){});
-			}
-			countco++;
-		}
-		console.log(Math.floor((countco / totalco) * 100));
-		document.getElementById("myBar").style.width = (Math.floor((countco / totalco) * 100))  + '%';
-
-		if (countco < totalco) {
-			setTimeout(next, 0);}
-		else{
-			document.getElementById("myBar").style.width = '0%';
-			callback()
-		}
-	}
-	setTimeout(next, 0);
-}
-
-function parseObject(geom, json, cityObj, countco, totalco, callback){
+function parseObject(geom, json, cityObj){
 	var coType = json.CityObjects[cityObj].type;
 	for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
 		if (
@@ -137,14 +116,6 @@ function parseObject(geom, json, cityObj, countco, totalco, callback){
 			}
 		}
 	}
-	callback();
-}
-
-function updateProgress(countco, totalco) {
-	if (countco % 100 == 0) {
-		console.log(Math.floor((countco / totalco) * 100));
-		document.getElementById("myBar").style.width = (Math.floor((countco / totalco) * 100))  + '%';
-	}
 }
 
 function createmesh(geom){
@@ -165,13 +136,7 @@ function createmesh(geom){
 	scene.add(mymesh);
 
 	// Add wireframe
-	// var currentMesh = scene.getObjectByName( "CJMesh" );
-	// var geo = new THREE.EdgesGeometry( mymesh.geometry ); 
-	// var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
-	// var wireframe = new THREE.LineSegments( geo, mat );
-	// wireframe.name = "wireframe"
-	// scene.add( wireframe );
-	// renderer.render(scene, camera);
+	//wireframeFunc();
 
 	// Reposition camera	
 	camera.position.set(0, 0, 2);
@@ -228,15 +193,29 @@ function draw_one_surface(geom, surface, cotype) {
 	}
 }
 
-//-- Wireframe checkbox function
+// Wireframe checkbox function
 function wireframeFunc() {
-	var currentMesh = scene.getObjectByName( "CJMesh" );
-	var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
-	var mat = new THREE.LineBasicMaterial( { color: 0x3F3F3F, linewidth: .8, transparent: true, opacity: 0.2 } );
-	var wireframe = new THREE.LineSegments( geo, mat );
-	wireframe.name = "wireframe"
-	scene.add( wireframe );
-	renderer.render(scene, camera);
+	// start spinner
+	document.getElementById("loader").style.display = "block";
+	
+	// Get the checkbox
+	var checkBox = document.getElementById("wireframeBox");
+	if (checkBox.checked == true){
+    // Add edges
+	    var currentMesh = scene.getObjectByName( "CJMesh" );
+		var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
+		var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+	    var wireframe = new THREE.LineSegments( geo, mat );
+	    wireframe.name = "wireframe"
+	    scene.add( wireframe );
+	    renderer.render(scene, camera);
+    } else { // remove edges
+      	scene.remove(scene.getObjectByName("wireframe"));
+      	renderer.render(scene, camera);
+    };
+
+	// end spinner
+	document.getElementById("loader").style.display = "none";
 };
 
 //-- calculate normal of a set of points
@@ -287,14 +266,15 @@ dropbox = document.getElementById("dropbox");
 dropbox.addEventListener("dragenter", dragenter, false);
 dropbox.addEventListener("dragover", dragover, false);
 dropbox.addEventListener("drop", drop, false);
+dropbox.addEventListener("click", click, false);
 
 ['dragover'].forEach(eventName => {
   dropbox.addEventListener(eventName, highlight, false)
-})
+});
 
-;['dragleave', 'drop'].forEach(eventName => {
+['dragleave', 'drop'].forEach(eventName => {
   dropbox.addEventListener(eventName, unhighlight, false)
-})
+});
 
 function highlight(e) {
   dropbox.classList.add('highlight')
@@ -322,6 +302,10 @@ function drop(e) {
   handleFiles(files);
 }
 
+function click(e) {
+  $('input:file')[0].click()
+}
+
 function handleFiles(files) {
 	var jsonfile = files[0];
 	var objectURL = window.URL.createObjectURL(jsonfile);
@@ -334,7 +318,7 @@ var camera = new THREE.PerspectiveCamera(
     60,                                   // Field of view
     window.innerWidth/window.innerHeight, // Aspect ratio
     0.1,                                  // Near clipping pane
-    10000                                  // Far clipping pane
+    10000                                 // Far clipping pane
 );
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -347,5 +331,5 @@ window.addEventListener( 'resize', function(){
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	}, 
+	},
 	false );
