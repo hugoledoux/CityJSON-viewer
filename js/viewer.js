@@ -25,7 +25,7 @@ var ALLCOLOURS = {
 function jsonGetter (url) {
 "use strict"
 	// uncheck wireframe checkbox
-	document.getElementById("wireframeBox").unchecked;
+	document.getElementById("wireframeBox").checked = false;
 	// start spinner
 	document.getElementById("loader").style.display = "block";
 	
