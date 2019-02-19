@@ -203,12 +203,14 @@ function wireframeFunc() {
 	if (checkBox.checked == true){
     // Add edges
 	    var currentMesh = scene.getObjectByName( "CJMesh" );
-		var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
-		var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
-	    var wireframe = new THREE.LineSegments( geo, mat );
-	    wireframe.name = "wireframe"
-	    scene.add( wireframe );
-	    renderer.render(scene, camera);
+	    if(currentMesh != undefined){
+			var geo = new THREE.EdgesGeometry( currentMesh.geometry ); 
+			var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: .1, transparent: true, opacity: 0.2 } );
+		    var wireframe = new THREE.LineSegments( geo, mat );
+		    wireframe.name = "wireframe"
+		    scene.add( wireframe );
+		    renderer.render(scene, camera);
+		}
     } else { // remove edges
       	scene.remove(scene.getObjectByName("wireframe"));
       	renderer.render(scene, camera);
