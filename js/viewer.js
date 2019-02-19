@@ -24,6 +24,8 @@ var ALLCOLOURS = {
 // Handle the dropped CityJSON file
 function jsonGetter (url) {
 "use strict"
+	// uncheck wireframe checkbox
+	document.getElementById("wireframeBox").unchecked;
 	// start spinner
 	document.getElementById("loader").style.display = "block";
 	
