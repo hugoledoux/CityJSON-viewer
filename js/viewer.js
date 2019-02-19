@@ -27,13 +27,11 @@ function jsonGetter (url) {
 	// Create new geometry for the new mesh
 	var geom = new THREE.Geometry();
 
-	$.getJSON(url, function (json) {
+	var getjson = $.getJSON(url, function(json) {
 		// Remove old geometry from scene
 		while(scene.children.length > 0){ 
 		    scene.remove(scene.children[0]); 
 		}
-
-		var roger = document.getElementById("myBar");
 
 		console.log("JSON file loaded.");
 
@@ -48,29 +46,49 @@ function jsonGetter (url) {
 
 		var totalco = Object.keys(json.CityObjects).length;
 		console.log("Total # City Objects: ", totalco);
-		parseObjects(geom, json, totalco, function(){
-			createmesh(geom);
-		});
 
-		//roger.style.width = 0  + '%';
-		
-	})
+		//parseObjects(totalco, geom, json, function(){createmesh(geom)});
+		parseObjectsProgress(totalco, geom, json, function(){createmesh(geom)});
+	});
 }
-function parseObjects(geom, json, totalco, callback){
+
+function parseObjects(totalco, geom, json, callback){
 	var countco = 0;
 	for (var cityObj in json.CityObjects) {
 		countco++;
-		parseObject(geom, json, cityObj, function(){
-			updateProgress(countco, totalco)
-		});
+		parseObject(geom, json, cityObj, countco, totalco, function(){});
 	}
+	
 	callback();
 }
 
-function parseObject(geom, json, cityObj, callback){
+function parseObjectsProgress(totalco, geom, json, callback){
+	groupcount = Math.floor(totalco / 20);
+	var countco = 0;
+
+	function next() {
+		for (var i = 0; i < groupcount; i++) {
+			if (countco < totalco) {
+				parseObject(geom, json, Object.keys(json.CityObjects)[countco], countco, totalco, function(){});
+			}
+			countco++;
+		}
+		console.log(Math.floor((countco / totalco) * 100));
+		document.getElementById("myBar").style.width = (Math.floor((countco / totalco) * 100))  + '%';
+
+		if (countco < totalco) {
+			setTimeout(next, 0);}
+		else{
+			document.getElementById("myBar").style.width = '0%';
+			callback()
+		}
+	}
+	setTimeout(next, 0);
+}
+
+function parseObject(geom, json, cityObj, countco, totalco, callback){
 	var coType = json.CityObjects[cityObj].type;
 	for (var geomNum = 0; geomNum < json.CityObjects[cityObj].geometry.length; geomNum++) {
-
 		if (
 		(json.CityObjects[cityObj].geometry[geomNum].type == ("MultiSurface")) ||
 		(json.CityObjects[cityObj].geometry[geomNum].type == ("CompositeSurface")) 
@@ -324,3 +342,10 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setClearColor( 0xFFFFFF );
 document.body.appendChild( renderer.domElement );
 renderer.render(scene, camera);
+
+window.addEventListener( 'resize', function(){
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	}, 
+	false );
