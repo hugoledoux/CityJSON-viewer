@@ -1,17 +1,17 @@
 
 # CityJSON viewer
 
-A simple web-viewer for [CityJSON](https://www.cityjson.org) files: drag-and-drop a file, wait a few seconds, and you see it. That's it.
+A simple web-viewer for [CityJSON](https://www.cityjson.org) files: drag-and-drop a file, wait a few milliseconds, and you see it. That's it.
 
-You can access it online at
+You can access it online at [https://tudelft3d.github.io/CityJSON-viewer/](https://tudelft3d.github.io/CityJSON-viewer/)
 
 ## Not supported (yet)
 
   - geometry templates (nothing will be drawn)
   - textures and material
-  - querying attributes of the object
   - loading multiple files (now if you drop a new file, the old one is removed)
   - choosing the colours, these are hard-coded for the CityJSON classes
+  - querying attributes of the object
 
 ## Datasets
 
