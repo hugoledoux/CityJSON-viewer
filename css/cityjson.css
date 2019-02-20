@@ -10,16 +10,16 @@
 
 .switchBox {
   position: absolute;
-  right: 50px;
-  top: 35px;
+  right: 20px;
+  top: 20px;
 }
 
 /* The switch - the box around the slider */
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 40px;
+  height: 24px;
 }
 
 /* Hide default HTML checkbox */
@@ -45,10 +45,10 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -63,14 +63,14 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
 }
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 34px;
+  border-radius: 25px;
 }
 
 .slider.round:before {
@@ -83,7 +83,7 @@ input:checked + .slider:before {
   right: 0;
   opacity: 0.5;
   font-size: small;
-  padding: 5px;
+  padding: 2px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -107,6 +107,7 @@ input:checked + .slider:before {
 
 .dbText {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
 }
 
 .loader {
