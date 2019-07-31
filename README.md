@@ -1,3 +1,20 @@
+# Changes by me
+This is an updated version of the CityJSON viewer. Following functions are now included
+  - get attribute information of city objects
+  - load multiple files at the same time
+  - supporting of parent/children
+  - hide/show complete file or single objects
+  - shadow support for presentation
+  - smoother controls
+  - cleaned up code
+  
+This program will regulary be updated. Following functions should be implemented:
+  - support world position of the files (so that they position to each other is right)
+  - enable editing and downloading of the files
+  - removing of the files should be possible
+  - offline support
+  - faster loading
+  - etc..  
 
 # CityJSON viewer
 
