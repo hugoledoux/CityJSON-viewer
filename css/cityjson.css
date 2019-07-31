@@ -1,102 +1,94 @@
 
-.pageHead {
-  position: relative;
+html{
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  overflow-y: hidden; /*important as otherwise size is somehow scrollable which is not desired */
 }
 
-.dropboxBox {
-	position: absolute;
-	left: 20px;
+body{
+  margin: 0px;
+  padding: 0px;
 }
 
-.switchBox {
+#viewer{
   position: absolute;
-  right: 20px;
-  top: 20px;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
 }
 
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 24px;
+canvas{
+  width: 100%;
+  height: 100%;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+table{
+  text-align: left
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
+tr{
   height: 20px;
-  width: 20px;
-  left: 2px;
-  bottom: 2px;
+}
+
+#pageHelper {
+  resize: horizontal;
+  float: left;
+  width: 25vh;
+  min-width: 250px;
+  height: 100vh;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  font-family: 'Roboto', sans-serif;
 }
 
-input:checked + .slider {
-  background-color: #2196F3;
+#dragger {
+  width: 5px;
+  height: 100vh;
+  background-color: lightgray;
+  float: left;
+  cursor: w-resize;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(16px);
-  -ms-transform: translateX(16px);
-  transform: translateX(16px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 25px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-.infoBox {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  opacity: 0.5;
-  font-size: small;
-  padding: 2px;
-  font-family: Arial, Helvetica, sans-serif;
+#dropboxBox{
+  padding-top: 15px;
 }
 
 #dropbox {
   border: 1px dashed #0F73BD;
   border-radius: 20px;
+  top: 20px;
   width: 200px;
   margin: 20px auto;
-  padding: 20px;
+  margin-top: 0px;
   text-align: center;
+  cursor: pointer;
   /*background: #0F73BD;*/
   /*opacity: 0.8;*/
 }
+
+#buttonBox {
+}
+
+
+#infoBox {
+  position: absolute;
+  top:0px;
+  right: 0px;
+  font-size: small;
+  padding: 2px;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  z-index: 2;
+}
+
+#imgTuD{
+  height:100px;
+  width: 200px;
+}
+
 
 #dropbox.highlight {
   background: #0F73BD;
@@ -106,26 +98,61 @@ input:checked + .slider:before {
 }
 
 .dbText {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: small;
 }
 
-.loader {
-  position: absolute;
-  margin: auto;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
+#filesBox{
+  width: 100%;
+  height: 42vh;
+  overflow: auto;
+  border-top: 2px solid lightgray;
+  border-bottom: 2px solid lightgray;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+#TreeView{
+  list-style-type:none;
+  padding-left: 10px;
+}
+
+.fileTree{
+  list-style-type:none;
+  padding-left: 10px;
+}
+
+.spanLiFileName{
+  font-weight: bold;
+}
+
+.objectTree{
+  list-style-type:none;
+  padding-left: 15px;
+}
+
+#attributeBox {
+  bottom: 0%;
+  height: 32.5vh;
+  width: 100%;
+  overflow: auto;
+}
+
+#cityObjId{
+    line-height: 0px;
+    vertical-align: bottom;
+}
+
+#buttonAttrBoxClose{
+  float: right;
+  background-color: inherit;
+  border: None;
+  font-size: 20px;
+  padding: 0px;
+}
+
+#axisHelper{
+  height: 200px;
+  width: 200px;
+  bottom: 10px;
+  position: absolute;
+  left: 26vh;
 }
