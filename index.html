@@ -1,43 +1,66 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset=utf-8>
-		<title>CityJSON viewer</title>
-		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
-		</style>
-	</head>
-	<body>
-		<link rel="stylesheet" href="./css/cityjson.css">
-		<div class="pageHead">
-			<div class="dropboxBox">
-	  		<form id="dropbox" class="my-form">
-	        <p><img class="logo" src="img/cityjson_logo.svg" width="150"></p>
-					<p class="dbText">Drop your file here,<br> or click to open</p>
-					<input type="file" id="fileElem" onchange="handleFiles(this.files)" style="display: none">
-	      </form>
-    	</div>
-    	<div class="switchBox">
-	      <label class="switch">
-          <input type="checkbox" id="wireframeBox" onclick="wireframeFunc()"> 
+
+<head>
+	<meta charset=utf-8>
+	<title>CityJSON viewer</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/earcut@2.1.5/dist/earcut.dev.min.js"></script>
+	<script src="js/three.min.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/viewer.js"></script>
+	<script src="js/functions.js"></script>
+
+	<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="css/cityjson.css">
+	<link rel="stylesheet" href="css/controls.css">
+</head>
+
+<body>
+	<div id="pageHelper">
+		<div id="dropboxBox">
+			<form id="dropbox" class="my-form">
+				<p><img class="logo" src="img/cityjson_logo.svg" width="150"></p>
+				<p class="dbText">Drop your file here,<br> or click to open</p>
+				<input type="file" id="fileElem" accept=".json" onchange="handleFiles(this.files)" multiple style="display: none">
+			</form>
+		</div>
+		<div id="buttonBox">
+			<label class="switch">
+          <input type="checkbox" id="wireframeBox" onclick="toggleWireframe()">
 				  <span class="slider round"></span>
 				  <p class="dbText">show edges</p>
 				</label>
-			</div>
 		</div>
-
-		<div class="loader" id="loader" style="display: none"></div>
-		
-		<div class="infoBox">
-		 <p><a href="https://github.com/tudelft3d/CityJSON-viewer/">GitHub repository</a></p>
+		<div id="filesBox" hidden="hidden">
+			<ul id="TreeView">
+			</ul>
 		</div>
+		<div id="attributeBox" hidden="hidden">
+			<table id="attributeTable" cellpadding=5px>
+				<tr>
+					<th>Attribute</th>
+					<th>Value</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="dragger"></div>
+	<div class="loader" id="loader" hidden="hidden"></div>
+	<div id="infoBox">
+		<a href="https://3d.bk.tudelft.nl/" target="_blank">
+			<img id="imgTuD" src="/img/tud_3geo.png">
+		</a>
+		<p><a href="https://github.com/tudelft3d/CityJSON-viewer/" target="_blank">GitHub repository</a></p>
+	</div>
+	<div id="viewer"></div>
+	<div id="axisHelper"></div>
+	<script>
+		$(document).ready(function() {
+			initDocument();
+			initViewer();
+		});
+	</script>
+</body>
 
-		<script src="js/three.min.js"></script>
-		<script src="js/OrbitControls.js"></script>
-		<script src="js/jquery-3.3.1.min.js"></script>
-		<script>module = {}</script>
-		<script src="js/earcut.js"></script>
-		<script src="js/viewer.js"></script>
-	</body>
 </html>
