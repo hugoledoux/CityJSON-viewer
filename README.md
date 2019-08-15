@@ -1,5 +1,7 @@
 # CityJSON viewer v2
 
+![CityJSON example](readme/example_Delft.PNG?raw=true "")
+
 A simple web-viewer for [CityJSON](https://www.cityjson.org) files: drag-and-drop a file, wait a few milliseconds, and you see it. That's it. This is an updated version of the CityJSON viewer with following functions:
 
   - get attribute information of city objects
