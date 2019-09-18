@@ -294,7 +294,7 @@ async function loadCityObjects(jsonName) {
     avgY,
     avgZ);
 
-  //enable movement parallel to ground  
+  //enable movement parallel to ground
   controls.screenSpacePanning = true;
 
 
@@ -500,6 +500,13 @@ function buildInfoDiv(jsonName, cityObj) {
 
   //fill table
   $("#cityObjId").text(cityObj);
+  //fill table with id
+  $('#attributeTable').append("<tr>" +
+    "<td>id</td>" +
+    "<td>" + cityObj + "</td>" +
+    "</tr>")
+
+  //fill table with attributes
   for (var key in json.CityObjects[cityObj].attributes) {
     $('#attributeTable').append("<tr>" +
       "<td>" + key + "</td>" +
@@ -616,6 +623,7 @@ function toggleMesh(cb) {
   renderer.render(scene, camera);
 }
 
+//display or hide a parent
 function toggleParent(cb) {
 
   console.log("TODO: implement checking system for parent/children with n-th deep");
