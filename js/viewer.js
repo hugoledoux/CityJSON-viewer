@@ -182,7 +182,8 @@ async function handleFiles(files) {
 
   for (var i = 0; i < files.length; i++) {
     //if file is not json
-    if (files[i].name.split(".")[1] != "json") {
+    var split_file_name = files[i].name.split(".");
+    if (split_file_name[split_file_name.length - 1] != "json") {
       alert("file '" + files[i].name + "' is not a json file");
       continue
     }
