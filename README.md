@@ -1,6 +1,10 @@
 
 # CityJSON viewer
 
+
+__This repository and project has been archived, the code has been merged into our (better) project: https://github.com/cityjson/ninja__
+
+
 ![CityJSON example](readme/example_Delft.PNG?raw=true "")
 
 A simple web-viewer for [CityJSON](https://www.cityjson.org) files: drag-and-drop a file, wait a few milliseconds, and you see it. That's it. 
